@@ -45,23 +45,28 @@ Thread.prototype.runner = function(f) {
 /**
  * Schedule a function to run in this thread.
  * @param {Function} f
+ * @returns this
  * @method
  * @private
  */
 Thread.prototype.schedule = function(f) {
     setTimeout(this.runner(f), 0);
+    return this;
 };
 
 /**
  * Pause the thread, waiting to be restarted.
+ * @returns this
  * @method
  */
 Thread.prototype.stop = function() {
     this.running = false;
+    return this;
 };
 
 /**
  * Continue running a stopped thread.
+ * @returns this
  * @method
  */
 Thread.prototype.start = function() {
@@ -69,6 +74,7 @@ Thread.prototype.start = function() {
     while (this.queue.length > 0) {
         this.schedule(this.queue.shift());
     }
+    return this;
 };
 
 /**

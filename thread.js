@@ -1,12 +1,17 @@
 /**
- * @param {Function} f
+ * If a function is provided, the thread is automatically started.
+ * @param {Function} [f]
  * @constructor
  * @namespace
  */
 function Thread(f) {
-    this.running = true;
     this.queue = [];
-    this.schedule(f);
+    if (f != null) {
+        this.running = true;
+        this.schedule(f);
+    } else {
+        this.running = false;
+    }
 }
 
 /**

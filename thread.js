@@ -32,7 +32,7 @@ Thread.prototype.runner = function(f) {
                 Thread.current = null;
             }
         } else {
-            thread.queue.push(f);
+            thread.queue.push(f.bind.apply(f, [this].concat(arguments)));
         }
     };
 };

@@ -4,7 +4,8 @@
  * @namespace
  */
 function Thread(f) {
-    this.alive = true;
+    this.running = true;
+    this.queue = [];
     this.schedule(f);
 }
 
@@ -21,15 +22,17 @@ Thread.current = null;
  * @private
  */
 Thread.prototype.runner = function(f) {
-    var _this = this;
+    var thread = this;
     return function() {
-        if (_this.alive) {
+        if (thread.running) {
             try {
-                Thread.current = _this;
+                Thread.current = thread;
                 f.apply(this, arguments);
             } finally {
                 Thread.current = null;
             }
+        } else {
+            thread.queue.push(f);
         }
     };
 };
@@ -45,11 +48,22 @@ Thread.prototype.schedule = function(f) {
 };
 
 /**
- * Permanently stop this thread from running.
+ * Pause the thread, waiting to be restarted.
  * @method
  */
-Thread.prototype.destroy = function() {
-    this.alive = false;
+Thread.prototype.stop = function() {
+    this.running = false;
+};
+
+/**
+ * Continue running a stopped thread.
+ * @method
+ */
+Thread.prototype.start = function() {
+    this.running = true;
+    while (this.queue.length > 0) {
+        this.schedule(this.queue.shift());
+    }
 };
 
 /**
